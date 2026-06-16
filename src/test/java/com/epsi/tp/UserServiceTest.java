@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -25,28 +24,22 @@ public class UserServiceTest {
         userService = new UserService();
     }
 
-    // ==========================================
-    // TESTS DE LA MÉTHODE : login()
-    // ==========================================
-
     @Test
     public void testLogin_Success() throws SQLException {
-        // Préparation des Mocks (Fausse base de données)
         Connection mockConn = mock(Connection.class);
         PreparedStatement mockStmt = mock(PreparedStatement.class);
         ResultSet mockRs = mock(ResultSet.class);
 
         when(mockConn.prepareStatement(anyString())).thenReturn(mockStmt);
         when(mockStmt.executeQuery()).thenReturn(mockRs);
-        when(mockRs.next()).thenReturn(true); // On simule qu'un utilisateur est trouvé
+        when(mockRs.next()).thenReturn(true);
 
-        // Interception du DriverManager
         try (MockedStatic<DriverManager> mockedDriverManager = mockStatic(DriverManager.class)) {
-            mockedDriverManager.when(() -> DriverManager.getConnection(anyString(), anyString(), any()))
+            mockedDriverManager.when(() -> DriverManager.getConnection(anyString(), anyString(), anyString()))
                     .thenReturn(mockConn);
 
             boolean result = userService.login("admin", "password");
-            assertTrue(result, "Le login devrait réussir");
+            assertTrue(result);
         }
     }
 
@@ -58,32 +51,27 @@ public class UserServiceTest {
 
         when(mockConn.prepareStatement(anyString())).thenReturn(mockStmt);
         when(mockStmt.executeQuery()).thenReturn(mockRs);
-        when(mockRs.next()).thenReturn(false); // On simule qu'aucun utilisateur n'est trouvé
+        when(mockRs.next()).thenReturn(false);
 
         try (MockedStatic<DriverManager> mockedDriverManager = mockStatic(DriverManager.class)) {
-            mockedDriverManager.when(() -> DriverManager.getConnection(anyString(), anyString(), any()))
+            mockedDriverManager.when(() -> DriverManager.getConnection(anyString(), anyString(), anyString()))
                     .thenReturn(mockConn);
 
             boolean result = userService.login("admin", "wrong_password");
-            assertFalse(result, "Le login devrait échouer");
+            assertFalse(result);
         }
     }
 
     @Test
     public void testLogin_SqlException() throws SQLException {
         try (MockedStatic<DriverManager> mockedDriverManager = mockStatic(DriverManager.class)) {
-            // On force une exception lors de la connexion
-            mockedDriverManager.when(() -> DriverManager.getConnection(anyString(), anyString(), any()))
-                    .thenThrow(new SQLException("Erreur de connexion simulée"));
+            mockedDriverManager.when(() -> DriverManager.getConnection(anyString(), anyString(), anyString()))
+                    .thenThrow(SQLException.class);
 
             boolean result = userService.login("admin", "password");
-            assertFalse(result, "Le login devrait échouer à cause de l'exception");
+            assertFalse(result);
         }
     }
-
-    // ==========================================
-    // TESTS DE LA MÉTHODE : getUserDetails()
-    // ==========================================
 
     @Test
     public void testGetUserDetails_Success() throws SQLException {
@@ -93,12 +81,11 @@ public class UserServiceTest {
 
         when(mockConn.prepareStatement(anyString())).thenReturn(mockStmt);
         when(mockStmt.executeQuery()).thenReturn(mockRs);
-        // On simule une boucle while(rs.next()) qui fait 1 tour
         when(mockRs.next()).thenReturn(true).thenReturn(false);
         when(mockRs.getString("username")).thenReturn("john_doe");
 
         try (MockedStatic<DriverManager> mockedDriverManager = mockStatic(DriverManager.class)) {
-            mockedDriverManager.when(() -> DriverManager.getConnection(anyString(), anyString(), any()))
+            mockedDriverManager.when(() -> DriverManager.getConnection(anyString(), anyString(), anyString()))
                     .thenReturn(mockConn);
 
             assertDoesNotThrow(() -> userService.getUserDetails("john_doe"));
@@ -108,17 +95,12 @@ public class UserServiceTest {
     @Test
     public void testGetUserDetails_SqlException() throws SQLException {
         try (MockedStatic<DriverManager> mockedDriverManager = mockStatic(DriverManager.class)) {
-            mockedDriverManager.when(() -> DriverManager.getConnection(anyString(), anyString(), any()))
-                    .thenThrow(new SQLException("Erreur simulée"));
+            mockedDriverManager.when(() -> DriverManager.getConnection(anyString(), anyString(), anyString()))
+                    .thenThrow(SQLException.class);
 
-            // On vérifie que l'erreur est bien attrapée (catch) et ne fait pas planter le programme
             assertDoesNotThrow(() -> userService.getUserDetails("john_doe"));
         }
     }
-
-    // ==========================================
-    // TESTS DE LA MÉTHODE : complexMethod()
-    // ==========================================
 
     @Test
     public void testComplexMethod_ALessThanZero() {
