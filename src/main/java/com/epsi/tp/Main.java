@@ -1,9 +1,12 @@
 package com.epsi.tp;
 
+import java.util.logging.Logger;
+
 public class Main {
-    public static void main(String[] args) {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
-    LOGGER.info("Démarrage de l'application...");
+
+    public static void main(String[] args) {
+        LOGGER.info("Démarrage de l'application...");
         
         UserService userService = new UserService();
         userService.login("admin", "password123");

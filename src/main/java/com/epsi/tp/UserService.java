@@ -2,17 +2,17 @@ package com.epsi.tp;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserService {
-    private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
 
-    private String DB_PASSWORD = System.getenv("DB_PASSWORD");
+    private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
     
-    public void login(String username, String password) {
-        
-        LOGGER.info("Tentative de connexion de l'utilisateur : " + username);
+    private String DB_PASSWORD = System.getenv("DB_PASSWORD");
 
     public boolean login(String username, String password) {
         LOGGER.info("Tentative de connexion de l'utilisateur : " + username);
@@ -20,7 +20,7 @@ public class UserService {
         String query = "SELECT id FROM users WHERE username = ? AND password = ?";
         
         try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb", "root", DB_PASSWORD);
-            PreparedStatement pstmt = conn.prepareStatement(query)) {
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
             
             pstmt.setString(1, username);
             pstmt.setString(2, password); 
@@ -28,37 +28,26 @@ public class UserService {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     LOGGER.info("Utilisateur connecté avec succès : " + username);
-                    return true; 
+                    return true;
                 } else {
-                    LOGGER.warn("Identifiants invalides pour l'utilisateur : " + username);
-                    return false; 
+                    LOGGER.warning("Identifiants invalides pour l'utilisateur : " + username);
+                    return false;
                 }
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Erreur lors de la vérification de la connexion", e);
             return false;
         }
-}
-        
-        try {
-            // Logique factice pour déclencher une exception
-            int result = 10 / 0;
-        } catch (Exception e) {
-            // Mauvaise pratique : bloc catch vide (l'erreur est ignorée silencieusement)
-            LOGGER.error("Erreur lors de la tentative de connexion", e);
-        }
     }
 
     public void getUserDetails(String username) {
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-
         String query = "SELECT * FROM users WHERE username = ?";
+        
         try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb", "root", DB_PASSWORD);
-            PreparedStatement pstmt = conn.prepareStatement(query)) {
-
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            
             pstmt.setString(1, username);
+            
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     LOGGER.info("Utilisateur trouvé : " + rs.getString("username"));
