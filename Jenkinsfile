@@ -20,46 +20,40 @@ pipeline {
             }
         }
 
-        stage('Build') {
+stage('Build') {
             steps {
                 echo 'Compilation du projet...'
-                // TODO : Ajouter la commande Maven pour nettoyer et compiler le projet (sans lancer les tests)
-                // sh '...'
+                sh 'mvn clean compile'
             }
         }
 
         stage('Test & Code Coverage') {
             steps {
                 echo 'Exécution des tests et génération du rapport JaCoCo...'
-                // TODO : Ajouter la commande Maven pour lancer les tests
-                // sh '...'
+                sh 'mvn test'
             }
             post {
                 always {
-                    // TODO : Indiquer à Jenkins où récupérer les rapports de tests au format XML (indice : plugin junit)
-                    // junit '...'
+                    junit 'target/surefire-reports/*.xml'
                 }
             }
         }
 
         stage('SonarQube Analysis') {
             environment {
-                // Nécessite de configurer un secret text "sonar-token" dans Jenkins
                 SONAR_TOKEN = credentials('sonar-token')
             }
             steps {
                 echo 'Analyse de la qualité du code avec SonarQube...'
-                // TODO : Ajouter la commande Maven pour lancer l'analyse SonarQube
-                // N'oubliez pas de passer les propriétés : sonar.projectKey, sonar.host.url et sonar.login
-                // sh '...'
+                sh 'mvn sonar:sonar -Dsonar.projectKey=bad-practices-app -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN}'
             }
         }
 
         stage('Quality Gate') {
             steps {
-                // TODO : Ajouter l'étape pour attendre le résultat du Quality Gate de SonarQube
-                // Indice : Il faut utiliser un 'timeout' englobant 'waitForQualityGate abortPipeline: true'
-                
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
 
