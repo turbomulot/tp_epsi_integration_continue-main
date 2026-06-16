@@ -15,17 +15,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-public class UserServiceTest {
+ class UserServiceTest {
 
     private UserService userService;
 
     @BeforeEach
-    public void setUp() {
+     void setUp() {
         userService = new UserService();
     }
 
     @Test
-    public void testLogin_Success() throws SQLException {
+     void testLogin_Success() throws SQLException {
         Connection mockConn = mock(Connection.class);
         PreparedStatement mockStmt = mock(PreparedStatement.class);
         ResultSet mockRs = mock(ResultSet.class);
@@ -45,7 +45,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testLogin_Failure() throws SQLException {
+     void testLogin_Failure() throws SQLException {
         Connection mockConn = mock(Connection.class);
         PreparedStatement mockStmt = mock(PreparedStatement.class);
         ResultSet mockRs = mock(ResultSet.class);
@@ -64,7 +64,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testLogin_SqlException() throws SQLException {
+     void testLogin_SqlException() throws SQLException {
         try (MockedStatic<DriverManager> mockedDriverManager = mockStatic(DriverManager.class)) {
             mockedDriverManager.when(() -> DriverManager.getConnection(any(), any(), any()))
                     .thenThrow(SQLException.class);
@@ -75,7 +75,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetUserDetails_Success() throws SQLException {
+     void testGetUserDetails_Success() throws SQLException {
         Connection mockConn = mock(Connection.class);
         PreparedStatement mockStmt = mock(PreparedStatement.class);
         ResultSet mockRs = mock(ResultSet.class);
@@ -94,7 +94,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetUserDetails_SqlException() throws SQLException {
+     void testGetUserDetails_SqlException() throws SQLException {
         try (MockedStatic<DriverManager> mockedDriverManager = mockStatic(DriverManager.class)) {
             mockedDriverManager.when(() -> DriverManager.getConnection(any(), any(), any()))
                     .thenThrow(SQLException.class);
@@ -104,27 +104,27 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testComplexMethod_ALessThanZero() {
+     void testComplexMethod_ALessThanZero() {
         assertDoesNotThrow(() -> userService.complexMethod(0, 1, 1));
     }
 
     @Test
-    public void testComplexMethod_BLessThanZero_CGreaterThanZero() {
+     void testComplexMethod_BLessThanZero_CGreaterThanZero() {
         assertDoesNotThrow(() -> userService.complexMethod(1, 0, 1));
     }
 
     @Test
-    public void testComplexMethod_BLessThanZero_CLessThanZero() {
+     void testComplexMethod_BLessThanZero_CLessThanZero() {
         assertDoesNotThrow(() -> userService.complexMethod(1, 0, 0));
     }
 
     @Test
-    public void testComplexMethod_BGreaterThanZero_CLessThanZero() {
+     void testComplexMethod_BGreaterThanZero_CLessThanZero() {
         assertDoesNotThrow(() -> userService.complexMethod(1, 1, 0));
     }
 
     @Test
-    public void testComplexMethod_AllPositive() {
+     void testComplexMethod_AllPositive() {
         assertDoesNotThrow(() -> userService.complexMethod(1, 1, 1));
     }
 }
