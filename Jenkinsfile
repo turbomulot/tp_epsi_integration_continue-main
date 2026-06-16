@@ -40,12 +40,13 @@ stage('Build') {
         }
 
         stage('SonarQube Analysis') {
-            environment {
-                SONAR_TOKEN = credentials('sonar-token')
-            }
             steps {
                 echo 'Analyse de la qualité du code avec SonarQube...'
-                sh 'mvn sonar:sonar -Dsonar.projectKey=bad-practices-app -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN}'
+                // Le wrapper 'withSonarQubeEnv' injecte automatiquement l'URL et le Token 
+                // configurés dans Jenkins sous le nom 'sonarqube'
+                withSonarQubeEnv('sonarqube') {
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=bad-practices-app'
+                }
             }
         }
 
