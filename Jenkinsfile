@@ -9,7 +9,7 @@ pipeline {
 
     environment {
         // Variables d'environnement
-        SONAR_HOST_URL = 'http://sonarqube:9000'
+        SONAR_HOST_URL = 'http://host.docker.internal:9000'
     }
 
     stages {
