@@ -15,7 +15,7 @@ public class UserService {
     private String dbpassword = System.getenv("dbpassword");
 
     public boolean login(String username, String password) {
-        LOGGER.log(Level.INFO, "Tentative de connexion de l'utilisateur : {0}", username);
+        LOGGER.log(Level.INFO, "Tentative de connexion de utilisateur : {0}", username);
         
         String query = "SELECT id FROM users WHERE username = ? AND password = ?";
         
@@ -30,12 +30,12 @@ public class UserService {
                     LOGGER.log(Level.INFO, "Utilisateur connecté avec succès : {0}", username);
                     return true;
                 } else {
-                    LOGGER.log(Level.WARNING, "Identifiants invalides pour l'utilisateur : {0}", username);
+                    LOGGER.log(Level.WARNING, "Identifiants invalides pour utilisateur : {0}", username);
                     return false;
                 }
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Erreur lors de la récupération de l\'utilisateur", e);
+            LOGGER.log(Level.SEVERE, "Erreur lors de la récupération de utilisateur", e);
             return false;
         }
     }
@@ -54,7 +54,7 @@ public class UserService {
                 }
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Erreur lors de la récupération de l'utilisateur", e);
+            LOGGER.log(Level.SEVERE, "Erreur lors de la récupération de utilisateur", e);
         }
     }
     
