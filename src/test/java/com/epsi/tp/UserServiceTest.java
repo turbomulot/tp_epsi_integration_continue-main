@@ -3,10 +3,10 @@ package com.epsi.tp;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserServiceTest {
+class UserServiceTest {
 
     @Test
-    public void testLoginAdmin() {
+    void testLoginAdmin() {
         UserService userService = new UserService();
         
         // On teste la méthode login avec les bons identifiants.
